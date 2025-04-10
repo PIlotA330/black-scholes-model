@@ -7,9 +7,6 @@ r = 0.05  #risk free rate
 T = 1  #time to expiration
 sigma = 0.2  #volatility
 
-# variable strike, vol, and risk rate
-# variable strike, vol, and time?
-
 def calc_bsm_call(price, strike, rate, time, vol):
     d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
     d2 = d1 - (vol*math.sqrt(time))
