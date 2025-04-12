@@ -13,4 +13,4 @@ def page(data):
     dataConverted = list(map(float, data.split(",")))
     cPrice = calc_bsm_call(dataConverted[0], dataConverted[1], dataConverted[2], dataConverted[3], dataConverted[4])
     pPrice = calc_bsm_put(dataConverted[0], dataConverted[1], dataConverted[2], dataConverted[3], dataConverted[4])
-    return f'<p>Call: { cPrice } and Put: { pPrice }</p>'
+    return {"callPrice" : cPrice, "putPrice" : pPrice}

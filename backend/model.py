@@ -21,5 +21,43 @@ def calc_bsm_put(price, strike, rate, time, vol):
     BSMpred = (strike*math.exp(-1*rate*time)*norm.cdf(-1*d2)) - (price*norm.cdf(-1*d1))
     return BSMpred
 
-print(calc_bsm_call(S, K, r, T, sigma))
-print(calc_bsm_put(S, K, r, T, sigma))
+# returns the delta for a call and then a put in an array in that order
+def calc_delta(price, strike, rate, time, vol):
+    d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
+    delta = norm.cdf(d1)
+    return [delta, delta-1]
+
+# use the norm.pdf function
+def calc_gamma(price, strike, rate, time, vol):
+    d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
+    gamma = norm.pdf(d1)/(price*vol*math.sqrt(time))
+    return gamma
+
+def calc_vega(price, strike, rate, time, vol):
+    d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
+    vega = price * norm.pdf(d1) * math.sqrt(time)
+    return vega
+
+def calc_theta(price, strike, rate, time, vol):
+    d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
+    d2 = d1 - (vol*math.sqrt(time))
+
+    secondCall = norm.cdf(d2)
+    secondPut = norm.cdf(-1*d2)
+
+    second = rate*strike*math.exp(-1*rate*time)
+
+    first = -1*(price*norm.pdf(d1)*vol)/(2*math.sqrt(time))
+
+    return [first-(second*secondCall), first+(second*secondPut)]
+
+def calc_rho(price, strike, rate, time, vol):
+    d1 = (math.log(price/strike) + (rate+(math.pow(vol, 2)/2))*time)/(vol*math.sqrt(time))
+    d2 = d1 - (vol*math.sqrt(time))
+
+    first = strike*time*math.exp(-1*rate*time)
+
+    return [first*norm.cdf(d2), -1*first*norm.cdf(-1*d2)]
+
+def calc_intrinsic(price, strike):
+    return [max([price-strike, 0]), max([strike-price, 0])]
